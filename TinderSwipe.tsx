@@ -3,7 +3,6 @@ import {
   View,
   Image,
   StyleSheet,
-  PanResponder,
   Animated,
   Text,
   Dimensions,
@@ -55,31 +54,9 @@ export function TinderSwipe() {
   const handleSwipeLeft = () => {
     console.log('swipe left');
   };
-  const handleSwipeAll = ()=>{
-    console.log('all images are shown')
-  }
-
-  const panResponder = useState(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onPanResponderMove: Animated.event([null, {dx: pan.x, dy: pan.y}]),
-      onPanResponderRelease: (_, gesture) => {
-        if (gesture.dx > 120) {
-          // Swiped right
-          handleSwipeRight();
-        } else if (gesture.dx < -120) {
-          // Swiped left
-          handleSwipeLeft();
-        } else {
-          // Reset card position
-          Animated.spring(pan, {
-            toValue: {x: 0, y: 0},
-            useNativeDriver: false,
-          }).start();
-        }
-      },
-    }),
-  )[0];
+  const handleSwipeAll = () => {
+    console.log('all images are shown');
+  };
 
   return (
     <View style={styles.container}>
@@ -88,21 +65,19 @@ export function TinderSwipe() {
       ) : (
         <Swiper
           cards={cards}
+          stackSize={2}
+          cardIndex={0}
           renderCard={card => (
-            <Animated.View
-              {...panResponder.panHandlers}
-              style={[pan.getLayout(), styles.card]}>
+            <Animated.View style={[pan.getLayout(), styles.card]}>
               <Image
                 source={card.image}
                 style={{flex: 1, width: ScreenWidth, height: ScreenHeight}}
               />
-              <Text>{card.id}</Text>
             </Animated.View>
           )}
           onSwipedRight={handleSwipeRight}
           onSwipedLeft={handleSwipeLeft}
           onSwipedAll={handleSwipeAll}
-        
         />
       )}
     </View>
